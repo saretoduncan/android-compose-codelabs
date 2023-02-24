@@ -23,6 +23,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -73,20 +78,21 @@ fun SearchBar(
 // Step: Align your body - Alignment
 @Composable
 fun AlignYourBodyElement(
-
+    @DrawableRes drawable: Int,
+    @StringRes text:Int,
     modifier: Modifier = Modifier
 ) {
     // Implement composable here
     Column(horizontalAlignment = Alignment.CenterHorizontally,
         modifier=modifier){
-        Image(painterResource(id = R.drawable.ab1_inversions),
+        Image(painterResource(id = drawable),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier= Modifier
                 .size(88.dp)
                 .clip(CircleShape)
         )
-        Text(stringResource(id = R.string.ab1_inversions),
+        Text(stringResource(id = text),
         style=MaterialTheme.typography.h3,
         modifier=Modifier.paddingFromBaseline(top= 24.dp, bottom = 8.dp))
     }
@@ -125,6 +131,17 @@ fun AlignYourBodyRow(
     modifier: Modifier = Modifier
 ) {
     // Implement composable here
+  LazyRow(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      contentPadding = PaddingValues(horizontal = 16.dp),
+     modifier = modifier){
+      items(alignYourBodyData){item ->
+          AlignYourBodyElement(
+         drawable= item.drawable,
+            text = item.text
+          )
+      }
+  }
 }
 
 // Step: Favorite collections grid - LazyGrid
@@ -133,7 +150,18 @@ fun FavoriteCollectionsGrid(
     modifier: Modifier = Modifier
 ) {
     // Implement composable here
-}
+    LazyHorizontalGrid(rows = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier= modifier.height(120.dp)){
+        items(favoriteCollectionsData){item ->
+            FavoriteCollectionCard(drawable = item.drawable, text = item.text)
+        }
+
+        }
+    }
+
 
 // Step: Home section - Slot APIs
 @Composable
@@ -195,7 +223,9 @@ fun SearchBarPreview() {
 fun AlignYourBodyElementPreview() {
     MySootheTheme {
         AlignYourBodyElement(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
+            drawable = R.drawable.ab1_inversions,
+            text= R.string.ab1_inversions
         )
     }
 }
